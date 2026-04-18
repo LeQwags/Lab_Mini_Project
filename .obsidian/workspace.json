@@ -1,0 +1,254 @@
+{
+  "main": {
+    "id": "af8de768157b4a42",
+    "type": "split",
+    "children": [
+      {
+        "id": "4cee5cf6e8fb191e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "140228eff8645f46",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
+            }
+          },
+          {
+            "id": "cac057cb655cdbae",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "README"
+            }
+          },
+          {
+            "id": "ffa1d8dce65623dc",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/draft.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "draft"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a7066dc3fa1fa7f8",
+    "type": "split",
+    "children": [
+      {
+        "id": "ce697a810e455868",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4461dbf95fccb862",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "2e75a8ee029648f9",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "4552bfdf4a0084a4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "92fd6d9c8c695d8f",
+    "type": "split",
+    "children": [
+      {
+        "id": "d4e732408403195c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fb969c4802f9bcda",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "docs/draft.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for draft"
+            }
+          },
+          {
+            "id": "b4e4cd8093838cb0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "docs/draft.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from draft"
+            }
+          },
+          {
+            "id": "b2400a7f2d858acf",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "c45e4b1d8e4d31c7",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "f98bd5aecadbedb1",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "docs/draft.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of draft"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "ffa1d8dce65623dc",
+  "lastOpenFiles": [
+    "Research.md",
+    "README.md",
+    "Extrenal_resources",
+    "lab3/topology/addressing_plan.md",
+    "docs/mini_project_overview.md",
+    "docs/lab3_overview.md",
+    "mini_project/report/final_report.md",
+    "mini_project/testing/security_tests.md",
+    "mini_project/testing/vlan_isolation.md",
+    "mini_project/testing/connectivity.md",
+    "mini_project/vlan/vlan_plan.md",
+    "mini_project/addressing/vlsm_calculations.md",
+    "mini_project/addressing/ip_plan.md",
+    "mini_project/design/design_decisions.md",
+    "lab3/report/lab3_report.md",
+    "lab3/tests/results_table.md",
+    "lab3/tests/failure_tests.md",
+    "lab3/tests/connectivity_tests.md",
+    "docs/concepts/subnetting_vlsm.md",
+    "docs/concepts/acl_basics.md",
+    "docs/concepts/vlan_basics.md",
+    "docs/concepts/ospf.md",
+    "docs/concepts/rip.md",
+    "docs/concepts/static_vs_dynamic.md",
+    "docs/concepts/routing_basics.md",
+    "Welcome.md",
+    "Addon.md",
+    "assets/screenshots/mini_project",
+    "assets/screenshots/lab3",
+    "assets/screenshots",
+    "assets/logs",
+    "assets",
+    "mini_project/configs/services",
+    "mini_project/configs/core",
+    "mini_project/configs/distribution",
+    "mini_project/configs/access"
+  ]
+}
