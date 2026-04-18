@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/draft.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "draft"
+              "title": "README"
             }
           }
         ],
@@ -123,7 +123,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/draft.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -133,7 +133,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for draft"
+              "title": "Backlinks for README"
             }
           },
           {
@@ -142,12 +142,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/draft.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from draft"
+              "title": "Outgoing links from README"
             }
           },
           {
@@ -185,13 +185,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/draft.md",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of draft"
+              "title": "Outline of README"
             }
           }
         ]
@@ -214,6 +214,10 @@
   },
   "active": "ffa1d8dce65623dc",
   "lastOpenFiles": [
+    "docs/zero_lab3_campus_network_guide.html",
+    "docs/ZERO_interactive_doc_template.md",
+    "zero_lab3_campus_network_guide.html",
+    "docs/draft.md",
     "Research.md",
     "README.md",
     "Extrenal_resources",
@@ -238,9 +242,6 @@
     "docs/concepts/ospf.md",
     "docs/concepts/rip.md",
     "docs/concepts/static_vs_dynamic.md",
-    "docs/concepts/routing_basics.md",
-    "Welcome.md",
-    "Addon.md",
     "assets/screenshots/mini_project",
     "assets/screenshots/lab3",
     "assets/screenshots",
@@ -248,7 +249,6 @@
     "assets",
     "mini_project/configs/services",
     "mini_project/configs/core",
-    "mini_project/configs/distribution",
-    "mini_project/configs/access"
+    "mini_project/configs/distribution"
   ]
 }

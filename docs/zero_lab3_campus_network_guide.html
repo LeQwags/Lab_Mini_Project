@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZERO // Lab 3 & Campus Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f1a;--bg2:#111827;--bg3:#1a2235;--bg4:#202d44;
+  --cyan:#00d4ff;--cyan2:#0099bb;--amber:#f59e0b;--green:#10b981;
+  --red:#ef4444;--text:#c8d6ef;--text-dim:#6b7fa8;--border:#1e3a5f;
+  --font-head:'Rajdhani',sans-serif;--font-body:'Exo 2',sans-serif;--font-mono:'Share Tech Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.015) 2px,rgba(0,212,255,0.015) 4px);pointer-events:none;z-index:0}
+
+/* HEADER */
+#header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+#header .title{font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:2px}
+#header .meta{font-family:var(--font-mono);font-size:11px;color:var(--text-dim)}
+#header .badge{background:var(--cyan2);color:#000;font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:2px;letter-spacing:1px}
+
+/* NAV */
+#nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:45px;z-index:99}
+.nav-tab{font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:1px;padding:10px 16px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-tab:hover{color:var(--text);background:var(--bg3)}
+.nav-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,212,255,0.05)}
+
+/* PANELS */
+.panel{display:none;padding:24px 20px;position:relative;z-index:1;animation:fadeIn .25s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ZERO INSIGHT */
+.zero-insight{border-left:3px solid var(--cyan);background:rgba(0,212,255,0.06);padding:12px 16px;margin:16px 0;border-radius:0 6px 6px 0}
+.zero-insight .zi-label{font-family:var(--font-mono);font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:6px}
+.zero-insight p{font-size:13px;color:var(--text)}
+
+/* SYNTHESIS STATEMENT */
+.synthesis{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--cyan2);border-radius:8px;padding:20px;margin-bottom:20px}
+.synthesis p{font-size:15px;font-weight:500;color:var(--text);line-height:1.8}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+.nav-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;transition:all .2s}
+.nav-card:hover{border-color:var(--cyan);background:var(--bg4)}
+.nav-card .nc-num{font-family:var(--font-mono);font-size:10px;color:var(--cyan);letter-spacing:1px}
+.nav-card .nc-title{font-family:var(--font-head);font-size:16px;font-weight:600;color:var(--text);margin:4px 0 6px}
+.nav-card .nc-desc{font-size:12px;color:var(--text-dim)}
+
+/* SECTION HEADINGS */
+.section-h{font-family:var(--font-head);font-size:20px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin:24px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.section-h2{font-family:var(--font-head);font-size:16px;font-weight:600;color:var(--text);letter-spacing:1px;margin:18px 0 8px}
+
+/* SPEC TABLE */
+.spec-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.spec-table th{background:var(--bg4);color:var(--cyan);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.spec-table td{padding:7px 10px;border-bottom:1px solid rgba(30,58,95,0.5);color:var(--text)}
+.spec-table tr:hover td{background:var(--bg3)}
+.tag-green{background:rgba(16,185,129,0.15);color:var(--green);padding:2px 7px;border-radius:3px;font-family:var(--font-mono);font-size:11px}
+.tag-amber{background:rgba(245,158,11,0.15);color:var(--amber);padding:2px 7px;border-radius:3px;font-family:var(--font-mono);font-size:11px}
+.tag-red{background:rgba(239,68,68,0.15);color:var(--red);padding:2px 7px;border-radius:3px;font-family:var(--font-mono);font-size:11px}
+.tag-cyan{background:rgba(0,212,255,0.12);color:var(--cyan);padding:2px 7px;border-radius:3px;font-family:var(--font-mono);font-size:11px}
+
+/* EXPANDABLE CARDS */
+.exp-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;margin:10px 0;overflow:hidden;transition:border-color .2s}
+.exp-card:hover{border-color:var(--cyan2)}
+.exp-header{padding:14px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.exp-header .eh-title{font-family:var(--font-head);font-size:15px;font-weight:600;color:var(--text)}
+.exp-header .eh-role{font-family:var(--font-mono);font-size:11px;color:var(--cyan);background:rgba(0,212,255,0.1);padding:2px 8px;border-radius:2px}
+.exp-header .arrow{color:var(--cyan);transition:transform .2s;font-size:12px}
+.exp-header.open .arrow{transform:rotate(90deg)}
+.exp-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border)}
+.exp-body.open{display:block}
+.exp-body p{font-size:13px;color:var(--text-dim);margin-bottom:8px}
+.exp-body strong{color:var(--text)}
+
+/* ACCORDIONS */
+.acc-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;margin:8px 0}
+.acc-header{padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.acc-header .ah-num{font-family:var(--font-mono);font-size:12px;color:var(--amber);min-width:28px}
+.acc-header .ah-title{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.acc-header .ah-arrow{color:var(--text-dim);transition:transform .2s;font-size:12px}
+.acc-header.open .ah-arrow{transform:rotate(90deg)}
+.acc-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border)}
+.acc-body.open{display:block}
+.acc-body p{font-size:13px;color:var(--text-dim);margin-bottom:10px}
+.acc-eval{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:4px;padding:8px 12px;font-family:var(--font-mono);font-size:12px;color:var(--amber)}
+
+/* STEPS */
+#progress-bar-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin:16px 0;height:6px}
+#progress-bar{height:100%;background:var(--green);transition:width .4s;width:0%}
+.progress-label{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-bottom:4px}
+
+.step-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;margin:10px 0;overflow:hidden;transition:border-color .3s}
+.step-card.done{border-color:var(--green)}
+.step-header{padding:12px 16px;display:flex;align-items:center;gap:12px}
+.step-num{font-family:var(--font-mono);font-size:12px;color:var(--cyan);min-width:32px}
+.step-title{font-family:var(--font-head);font-size:15px;font-weight:600;color:var(--text);flex:1}
+.step-btn{font-family:var(--font-mono);font-size:11px;padding:4px 10px;border-radius:3px;border:1px solid var(--green);background:transparent;color:var(--green);cursor:pointer;transition:all .2s}
+.step-btn:hover{background:var(--green);color:#000}
+.step-btn.done{background:var(--green);color:#000;border-color:var(--green)}
+.step-body{padding:0 16px 14px}
+.step-desc{font-size:13px;color:var(--text-dim);margin-bottom:10px}
+.cmd-block{background:#0a0f1a;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:0 4px 4px 0;padding:10px 14px;margin:8px 0;font-family:var(--font-mono);font-size:12px;color:#00ff88;position:relative;white-space:pre}
+.cmd-label{position:absolute;top:6px;right:8px;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:1px}
+
+/* EVAL LAYERS */
+.eval-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:16px;margin:10px 0;display:flex;gap:14px}
+.eval-num{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--cyan);opacity:.4;min-width:36px}
+.eval-content .ec-layer{font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:1px;margin-bottom:4px}
+.eval-content .ec-title{font-family:var(--font-head);font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.eval-content .ec-q{font-size:13px;color:var(--text-dim);margin-bottom:8px}
+.eval-content .ec-check{background:rgba(0,0,0,0.3);border:1px dashed var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--text-dim)}
+
+/* GLOSSARY */
+.glos-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:14px;margin:8px 0}
+.glos-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.glos-term{font-family:var(--font-head);font-size:16px;font-weight:600;color:var(--text)}
+.glos-abbr{font-family:var(--font-mono);font-size:11px;color:var(--cyan);background:rgba(0,212,255,0.1);padding:2px 7px;border-radius:2px}
+.glos-def{font-size:13px;color:var(--text-dim);margin-bottom:6px}
+.glos-ex{font-family:var(--font-mono);font-size:12px;color:var(--amber);background:rgba(245,158,11,0.06);border-left:2px solid var(--amber);padding:4px 10px;border-radius:0 3px 3px 0}
+
+/* ASSESSMENT */
+.assess-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:16px;margin:10px 0;display:flex;align-items:center;gap:16px}
+.assess-marks{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--green);min-width:56px;text-align:center}
+.assess-body .ab-part{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.assess-body .ab-title{font-family:var(--font-head);font-size:15px;font-weight:600;color:var(--text);margin:3px 0}
+.assess-body .ab-desc{font-size:12px;color:var(--text-dim)}
+
+.checklist-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(30,58,95,0.4);font-size:13px;cursor:pointer}
+.checklist-item:last-child{border-bottom:none}
+.chk-box{width:16px;height:16px;border:1px solid var(--green);border-radius:3px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.chk-box.checked{background:var(--green)}
+.chk-box.checked::after{content:'✓';color:#000;font-size:11px;font-weight:700}
+.checklist-item.checked span{text-decoration:line-through;color:var(--text-dim)}
+
+.report-tip{background:rgba(0,212,255,0.05);border:1px solid var(--cyan2);border-radius:6px;padding:14px 16px;margin-top:16px}
+.report-tip .rt-label{font-family:var(--font-mono);font-size:10px;color:var(--cyan);letter-spacing:2px;margin-bottom:6px}
+
+.flow-wrap{overflow-x:auto;margin:16px 0}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="title">ZERO // LAB 3 &amp; CAMPUS NETWORK</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="meta">APR 2026 // NETWORKING MODULE</div>
+    <div class="badge">INTERACTIVE GUIDE</div>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="nav-tab active" onclick="switchTab('overview')">01 OVERVIEW</button>
+  <button class="nav-tab" onclick="switchTab('topology')">02 TOPOLOGY</button>
+  <button class="nav-tab" onclick="switchTab('components')">03 COMPONENTS</button>
+  <button class="nav-tab" onclick="switchTab('priors')">04 PRIORS</button>
+  <button class="nav-tab" onclick="switchTab('procedure')">05 PROCEDURE</button>
+  <button class="nav-tab" onclick="switchTab('eval')">06 EVALUATION</button>
+  <button class="nav-tab" onclick="switchTab('glossary')">07 GLOSSARY</button>
+  <button class="nav-tab" onclick="switchTab('assessment')">08 ASSESSMENT</button>
+</div>
+
+<!-- ===== OVERVIEW ===== -->
+<div class="panel active" id="panel-overview">
+  <div class="synthesis">
+    <p>This module is fundamentally about <strong style="color:var(--cyan)">the cost of intelligence in a network</strong> — every routing method represents a trade-off between operator control, protocol overhead, and failure recovery speed. Lab 3 forces you to <em>measure</em> that trade-off empirically across Static, RIP v2, and OSPF, while the Campus Mini-Project applies the winning approach to a real enterprise topology with VLANs, ACLs, and services.</p>
+  </div>
+
+  <div class="zero-insight">
+    <div class="zi-label">// ZERO INSIGHT</div>
+    <p>The underlying question across both deliverables is: <em>who should hold the routing knowledge?</em> Static routing puts it entirely in the operator's head. RIP distributes it crudely by hop count. OSPF distributes it precisely using a full link-state map. Understanding this spectrum is the intellectual core of the entire module.</p>
+  </div>
+
+  <div class="section-h">End-to-End System Flow</div>
+  <div class="flow-wrap">
+    <svg width="100%" viewBox="0 0 680 200" role="img">
+      <title>Lab 3 and Campus Network end-to-end flow</title>
+      <desc>Flow from topology setup through routing configuration, failure simulation, analysis, to campus design</desc>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <rect x="20" y="76" width="104" height="48" rx="6" fill="#0f2d2d" stroke="#1d9e75" stroke-width="0.5"/>
+      <text font-family="'Exo 2',sans-serif" font-size="13" font-weight="500" fill="#9fe1cb" x="72" y="97" text-anchor="middle">Build</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#5dcaa5" x="72" y="114" text-anchor="middle">Topology setup</text>
+      <line x1="124" y1="100" x2="148" y2="100" stroke="#6b7fa8" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <rect x="150" y="76" width="104" height="48" rx="6" fill="#1a1030" stroke="#534ab7" stroke-width="0.5"/>
+      <text font-family="'Exo 2',sans-serif" font-size="13" font-weight="500" fill="#cec bf6" x="202" y="97" text-anchor="middle" fill="#afa9ec">Configure</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#7f77dd" x="202" y="114" text-anchor="middle">Static / RIP / OSPF</text>
+      <line x1="254" y1="100" x2="278" y2="100" stroke="#6b7fa8" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <rect x="280" y="76" width="104" height="48" rx="6" fill="#2a1e08" stroke="#ba7517" stroke-width="0.5"/>
+      <text font-family="'Exo 2',sans-serif" font-size="13" font-weight="500" fill="#fac775" x="332" y="97" text-anchor="middle">Simulate</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#ef9f27" x="332" y="114" text-anchor="middle">Failure &amp; recovery</text>
+      <line x1="384" y1="100" x2="408" y2="100" stroke="#6b7fa8" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <rect x="410" y="76" width="104" height="48" rx="6" fill="#2a1008" stroke="#993c1d" stroke-width="0.5"/>
+      <text font-family="'Exo 2',sans-serif" font-size="13" font-weight="500" fill="#f0997b" x="462" y="97" text-anchor="middle">Analyse</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#d85a30" x="462" y="114" text-anchor="middle">Compare metrics</text>
+      <line x1="514" y1="100" x2="538" y2="100" stroke="#6b7fa8" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <rect x="540" y="76" width="120" height="48" rx="6" fill="#0a2016" stroke="#3b6d11" stroke-width="0.5"/>
+      <text font-family="'Exo 2',sans-serif" font-size="13" font-weight="500" fill="#c0dd97" x="600" y="97" text-anchor="middle">Design</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#639922" x="600" y="114" text-anchor="middle">Campus network</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#6b7fa8" x="340" y="168" text-anchor="middle">Convergence Time · Packet Loss · Routing Efficiency → Recommendation</text>
+    </svg>
+  </div>
+
+  <div class="section-h">Navigation</div>
+  <div class="cards-grid">
+    <div class="nav-card" onclick="switchTab('topology')">
+      <div class="nc-num">02 // TOPOLOGY</div>
+      <div class="nc-title">Network Structure</div>
+      <div class="nc-desc">Interactive router topology, VLAN map, and parameter reference table</div>
+    </div>
+    <div class="nav-card" onclick="switchTab('components')">
+      <div class="nc-num">03 // COMPONENTS</div>
+      <div class="nc-title">Subsystems</div>
+      <div class="nc-desc">Six interacting protocol and design subsystems with roles explained</div>
+    </div>
+    <div class="nav-card" onclick="switchTab('priors')">
+      <div class="nc-num">04 // PRIORS</div>
+      <div class="nc-title">Mental Models</div>
+      <div class="nc-desc">Seven foundational assumptions you must hold before configuring</div>
+    </div>
+    <div class="nav-card" onclick="switchTab('procedure')">
+      <div class="nc-num">05 // PROCEDURE</div>
+      <div class="nc-title">Step-by-Step</div>
+      <div class="nc-desc">Parts A–H with commands, checks, and completion tracker</div>
+    </div>
+    <div class="nav-card" onclick="switchTab('eval')">
+      <div class="nc-num">06 // EVALUATION</div>
+      <div class="nc-title">Evaluation Layers</div>
+      <div class="nc-desc">Five analytical layers from topology to security, with verification tests</div>
+    </div>
+    <div class="nav-card" onclick="switchTab('glossary')">
+      <div class="nc-num">07 // GLOSSARY</div>
+      <div class="nc-title">Key Terms</div>
+      <div class="nc-desc">All protocol, topology, and service terms with contextual examples</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOPOLOGY ===== -->
+<div class="panel" id="panel-topology">
+  <div class="section-h">Lab 3 — Router Topology (4-Router Mesh)</div>
+  <div class="flow-wrap">
+    <svg width="100%" viewBox="0 0 680 340" role="img">
+      <title>Lab 3 four-router mesh topology</title>
+      <desc>Four routers R1-R4 in a ring/mesh, each connected to its own LAN with PCs</desc>
+      <defs>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <line x1="220" y1="130" x2="460" y2="130" stroke="#1e3a5f" stroke-width="2"/>
+      <line x1="220" y1="230" x2="460" y2="230" stroke="#1e3a5f" stroke-width="2"/>
+      <line x1="220" y1="130" x2="220" y2="230" stroke="#1e3a5f" stroke-width="2"/>
+      <line x1="460" y1="130" x2="460" y2="230" stroke="#1e3a5f" stroke-width="2"/>
+      <line x1="220" y1="130" x2="460" y2="230" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="4 3"/>
+      <line x1="460" y1="130" x2="220" y2="230" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="4 3"/>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#1e3a5f" x="340" y="122" text-anchor="middle">10.0.12.0/30</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#1e3a5f" x="340" y="246" text-anchor="middle">10.0.34.0/30</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#1e3a5f" x="196" y="185" text-anchor="end">10.0.13.0/30</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#1e3a5f" x="484" y="185" text-anchor="start">10.0.24.0/30</text>
+      <!-- R1 -->
+      <rect x="170" y="104" width="100" height="52" rx="8" fill="#0f2d2d" stroke="#1d9e75" stroke-width="1"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="14" font-weight="600" fill="#9fe1cb" x="220" y="128" text-anchor="middle" dominant-baseline="central">R1</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#5dcaa5" x="220" y="146" text-anchor="middle">192.168.1.1/24</text>
+      <!-- R2 -->
+      <rect x="410" y="104" width="100" height="52" rx="8" fill="#0f2d2d" stroke="#1d9e75" stroke-width="1"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="14" font-weight="600" fill="#9fe1cb" x="460" y="128" text-anchor="middle" dominant-baseline="central">R2</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#5dcaa5" x="460" y="146" text-anchor="middle">192.168.2.1/24</text>
+      <!-- R3 -->
+      <rect x="170" y="204" width="100" height="52" rx="8" fill="#0f2d2d" stroke="#1d9e75" stroke-width="1"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="14" font-weight="600" fill="#9fe1cb" x="220" y="228" text-anchor="middle" dominant-baseline="central">R3</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#5dcaa5" x="220" y="146" text-anchor="middle">192.168.3.1/24</text>
+      <!-- R4 -->
+      <rect x="410" y="204" width="100" height="52" rx="8" fill="#0f2d2d" stroke="#1d9e75" stroke-width="1"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="14" font-weight="600" fill="#9fe1cb" x="460" y="228" text-anchor="middle" dominant-baseline="central">R4</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#5dcaa5" x="460" y="246" text-anchor="middle">192.168.4.1/24</text>
+      <!-- LAN links -->
+      <line x1="220" y1="104" x2="220" y2="70" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="170" y="38" width="100" height="32" rx="5" fill="#1a1030" stroke="#534ab7" stroke-width="0.5"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="13" font-weight="600" fill="#afa9ec" x="220" y="54" text-anchor="middle" dominant-baseline="central">LAN 1</text>
+      <line x1="460" y1="104" x2="460" y2="70" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="410" y="38" width="100" height="32" rx="5" fill="#1a1030" stroke="#534ab7" stroke-width="0.5"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="13" font-weight="600" fill="#afa9ec" x="460" y="54" text-anchor="middle" dominant-baseline="central">LAN 2</text>
+      <line x1="220" y1="256" x2="220" y2="295" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="170" y="295" width="100" height="32" rx="5" fill="#1a1030" stroke="#534ab7" stroke-width="0.5"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="13" font-weight="600" fill="#afa9ec" x="220" y="311" text-anchor="middle" dominant-baseline="central">LAN 3</text>
+      <line x1="460" y1="256" x2="460" y2="295" stroke="#00d4ff" stroke-width="1.5"/>
+      <rect x="410" y="295" width="100" height="32" rx="5" fill="#1a1030" stroke="#534ab7" stroke-width="0.5"/>
+      <text font-family="'Rajdhani',sans-serif" font-size="13" font-weight="600" fill="#afa9ec" x="460" y="311" text-anchor="middle" dominant-baseline="central">LAN 4</text>
+      <text font-family="'Share Tech Mono',monospace" font-size="11" fill="#ef4444" x="340" y="174" text-anchor="middle">⚡ Simulate failure: shut R1↔R2</text>
+    </svg>
+  </div>
+
+  <div class="zero-insight">
+    <div class="zi-label">// ZERO INSIGHT</div>
+    <p>The mesh topology is deliberate — it creates <strong>redundant paths</strong> between any two LANs. Static routing can't exploit them automatically. RIP can, but slowly. OSPF can, and fastest. The topology forces the protocol differences to be visible and measurable.</p>
+  </div>
+
+  <div class="section-h">Parameter Reference Table</div>
+  <table class="spec-table">
+    <tr><th>Parameter</th><th>Static</th><th>RIP v2</th><th>OSPF</th></tr>
+    <tr><td>Protocol type</td><td><span class="tag-amber">Manual</span></td><td><span class="tag-cyan">Distance-vector</span></td><td><span class="tag-green">Link-state</span></td></tr>
+    <tr><td>Metric</td><td>N/A (manual)</td><td>Hop count (max 15)</td><td>Cost (bandwidth-based)</td></tr>
+    <tr><td>Update method</td><td>None</td><td>Periodic (30s)</td><td>Triggered (on change)</td></tr>
+    <tr><td>Convergence speed</td><td><span class="tag-red">None (manual fix)</span></td><td><span class="tag-amber">Slow (~minutes)</span></td><td><span class="tag-green">Fast (&lt;seconds)</span></td></tr>
+    <tr><td>CPU/BW overhead</td><td><span class="tag-green">Very low</span></td><td><span class="tag-amber">Medium</span></td><td><span class="tag-amber">Medium-high</span></td></tr>
+    <tr><td>Scalability</td><td>Small networks only</td><td>Max 15 hops</td><td>Large / enterprise</td></tr>
+    <tr><td>Config complexity</td><td><span class="tag-green">Low</span></td><td><span class="tag-amber">Medium</span></td><td><span class="tag-red">Higher</span></td></tr>
+  </table>
+
+  <div class="section-h">Campus Network — VLAN Structure</div>
+  <table class="spec-table">
+    <tr><th>VLAN ID</th><th>Name</th><th>Subnet (example)</th><th>Hosts</th></tr>
+    <tr><td><span class="tag-cyan">VLAN 10</span></td><td>Engineering</td><td>192.168.10.0/24</td><td>Dept. PCs</td></tr>
+    <tr><td><span class="tag-cyan">VLAN 20</span></td><td>ICT</td><td>192.168.20.0/24</td><td>Dept. PCs</td></tr>
+    <tr><td><span class="tag-cyan">VLAN 30</span></td><td>Administration</td><td>192.168.30.0/24</td><td>Admin PCs</td></tr>
+    <tr><td><span class="tag-amber">VLAN 40</span></td><td>Student WiFi</td><td>192.168.40.0/24</td><td>Wireless devices</td></tr>
+    <tr><td><span class="tag-green">VLAN 50</span></td><td>Servers</td><td>192.168.50.0/24</td><td>DHCP, DNS, App servers</td></tr>
+    <tr><td><span class="tag-cyan">VLAN 60</span></td><td>Lab A / Lab B</td><td>192.168.60.0/24</td><td>Lab PCs</td></tr>
+  </table>
+</div>
+
+<!-- ===== COMPONENTS ===== -->
+<div class="panel" id="panel-components">
+  <div class="section-h">Six Interacting Subsystems</div>
+  <div class="zero-insight">
+    <div class="zi-label">// ZERO INSIGHT</div>
+    <p>The module isn't just about three protocols — it's about <strong>six interdependent layers of decision-making</strong>: how to number, segment, route, assign addresses, control access, and verify a network. Each subsystem fails independently and debugging requires knowing which layer is responsible.</p>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-header" onclick="toggleExp(this)">
+      <span class="eh-title">IP Addressing &amp; Subnetting</span>
+      <span class="eh-role">SUBSYSTEM 1</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="exp-body">
+      <p><strong>Role:</strong> Assigns unique logical addresses to every interface and host. Without correct subnetting, nothing routes.</p>
+      <p><strong>Devices/Actors:</strong> Router interfaces, LAN PCs, DHCP server</p>
+      <p><strong>Key parameters:</strong> Subnet mask, network address, broadcast address, host range</p>
+      <p><strong>Purpose:</strong> Divide the address space to fit each department's host count using VLSM — no wasted IPs, no overlap.</p>
+      <p><strong>Key checks:</strong> Can R1's LAN PC ping R1's interface? Are all /30 WAN links in different subnets?</p>
+      <div class="zero-insight" style="margin-top:10px"><div class="zi-label">// WHY THIS MATTERS</div><p>All three routing methods in Lab 3 assume correct IP addressing. A misconfigured subnet mask is invisible to routing protocols — the router will advertise the wrong network and traffic will silently drop.</p></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-header" onclick="toggleExp(this)">
+      <span class="eh-title">Static Routing Engine</span>
+      <span class="eh-role">SUBSYSTEM 2</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="exp-body">
+      <p><strong>Role:</strong> Operator-defined forwarding decisions. Every destination network must be explicitly entered.</p>
+      <p><strong>Devices/Actors:</strong> Network administrator, router routing table</p>
+      <p><strong>Key parameters:</strong> Destination network, subnet mask, next-hop IP or exit interface</p>
+      <p><strong>Purpose:</strong> Establish baseline full connectivity before dynamic protocols are tested. Also used to measure manual configuration time.</p>
+      <p><strong>Key checks:</strong> show ip route — are all 4 LAN networks present on every router? Does pinging across all LANs succeed?</p>
+      <div class="cmd-block">ip route 192.168.2.0 255.255.255.0 10.0.12.2<span class="cmd-label">IOS CLI</span></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-header" onclick="toggleExp(this)">
+      <span class="eh-title">RIP v2 Distance-Vector Engine</span>
+      <span class="eh-role">SUBSYSTEM 3</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="exp-body">
+      <p><strong>Role:</strong> Routers share routing tables every 30 seconds. Best path = fewest hops.</p>
+      <p><strong>Devices/Actors:</strong> All 4 routers, RIP process</p>
+      <p><strong>Key parameters:</strong> Version 2, no auto-summary, network statements, hop count metric</p>
+      <p><strong>Purpose:</strong> Measure automatic convergence after a link failure — how long before traffic finds an alternate path?</p>
+      <p><strong>Key checks:</strong> show ip rip database — are all networks learned? After shut on R1-R2 link, how many seconds until ping recovers?</p>
+      <div class="cmd-block">router rip
+version 2
+no auto-summary
+network 192.168.1.0
+network 10.0.0.0<span class="cmd-label">IOS CLI</span></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-header" onclick="toggleExp(this)">
+      <span class="eh-title">OSPF Link-State Engine</span>
+      <span class="eh-role">SUBSYSTEM 4</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="exp-body">
+      <p><strong>Role:</strong> Each router builds a full map of the network (LSDB). SPF algorithm computes shortest cost path.</p>
+      <p><strong>Devices/Actors:</strong> All 4 routers, OSPF process, DR/BDR election (if applicable)</p>
+      <p><strong>Key parameters:</strong> Process ID, area 0, network statements with wildcard masks, router-id</p>
+      <p><strong>Purpose:</strong> Measure fast convergence and routing efficiency — OSPF reacts to topology changes in seconds, not minutes.</p>
+      <p><strong>Key checks:</strong> show ip ospf neighbor — are adjacencies FULL? show ip ospf database — is the LSDB consistent across all routers?</p>
+      <div class="cmd-block">router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0<span class="cmd-label">IOS CLI</span></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-header" onclick="toggleExp(this)">
+      <span class="eh-title">VLAN &amp; Inter-VLAN Routing</span>
+      <span class="eh-role">SUBSYSTEM 5</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="exp-body">
+      <p><strong>Role:</strong> VLANs isolate broadcast domains on switches. Inter-VLAN routing allows controlled communication between them.</p>
+      <p><strong>Devices/Actors:</strong> Layer 2 switches, router or Layer 3 switch, trunk links</p>
+      <p><strong>Key parameters:</strong> VLAN IDs, trunk ports (802.1Q), sub-interfaces or SVI, encapsulation</p>
+      <p><strong>Purpose:</strong> Segment the campus network so Engineering, ICT, Admin, Students, and Servers are logically separated but can still communicate as permitted.</p>
+      <p><strong>Key checks:</strong> Can VLAN 10 ping VLAN 50? Is VLAN 40 blocked from reaching VLAN 30? Are trunks active?</p>
+      <div class="cmd-block">interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0<span class="cmd-label">Router-on-a-stick</span></div>
+    </div>
+  </div>
+
+  <div class="exp-card">
+    <div class="exp-header" onclick="toggleExp(this)">
+      <span class="eh-title">Network Services &amp; Security (DHCP + ACLs)</span>
+      <span class="eh-role">SUBSYSTEM 6</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="exp-body">
+      <p><strong>Role:</strong> DHCP automates IP assignment. ACLs enforce the security policy: students reach servers, not admin.</p>
+      <p><strong>Devices/Actors:</strong> DHCP server or router, ACL entries on router interfaces</p>
+      <p><strong>Key parameters:</strong> DHCP pool, default-router, DNS server, ACL permit/deny statements, interface direction (in/out)</p>
+      <p><strong>Purpose:</strong> Simulate a production environment where dynamic clients are managed and traffic is filtered at the network boundary.</p>
+      <p><strong>Key checks:</strong> Do VLAN 40 hosts get IPs automatically? Does a VLAN 40 PC fail to ping 192.168.30.x? Does the same PC successfully ping 192.168.50.x?</p>
+      <div class="cmd-block">ip access-list extended STUDENT-POLICY
+ deny ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
+ permit ip 192.168.40.0 0.0.0.255 192.168.50.0 0.0.0.255<span class="cmd-label">ACL example</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRIORS ===== -->
+<div class="panel" id="panel-priors">
+  <div class="section-h">Seven Foundational Assumptions</div>
+  <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px">These must be true in your mental model before you configure anything. Click each to reveal the explanation and self-assessment question.</p>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P1</span><span class="ah-title">Routers forward packets between networks using routing tables</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>A router is not a switch. It operates at Layer 3 and makes per-packet forwarding decisions based on the destination IP address, consulting its routing table to find the best next-hop. Without a routing table entry, the packet is dropped.</p>
+      <p>PCs on a LAN only know their default gateway — they hand all non-local traffic to the router's interface address on their subnet.</p>
+      <div class="acc-eval">Self-check: Can you trace how a packet from 192.168.1.10 reaches 192.168.4.10 via two intermediate routers, naming the routing table lookups at each hop?</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P2</span><span class="ah-title">Subnets must not overlap; each interface belongs to exactly one subnet</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>If two router interfaces share a subnet, the router gets confused about which interface to use for outbound traffic. WAN links use /30 subnets (4 addresses, 2 usable) to minimise waste. LAN segments use /24 for up to 254 hosts.</p>
+      <div class="acc-eval">Self-check: Given 10.0.0.0/24, can you carve out four /30 subnets for WAN links and list their network, usable hosts, and broadcast addresses?</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P3</span><span class="ah-title">Convergence time is the interval between a failure and restored routing stability</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>When a link fails, routers must detect the failure, propagate the update, and recalculate routes. During this window, packets may be lost or looped. Measuring this window is the primary metric in Lab 3's failure simulation.</p>
+      <p>Static routing never converges automatically. RIP takes 30–180 seconds (periodic updates + holddown timers). OSPF typically converges in under 10 seconds.</p>
+      <div class="acc-eval">Self-check: If RIP sends updates every 30 seconds and uses a 180-second holddown timer, what is the worst-case convergence time after a link failure?</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P4</span><span class="ah-title">VLANs are logical, not physical — a trunk carries multiple VLANs on one cable</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>A VLAN creates a separate broadcast domain on a physical switch. Hosts in different VLANs cannot communicate without a Layer 3 device (router or L3 switch). An 802.1Q trunk port tags each frame with the VLAN ID, allowing a single physical link to carry traffic from all VLANs to a router.</p>
+      <div class="acc-eval">Self-check: If you add a host to VLAN 20 on a switch port but forget to configure the router sub-interface for VLAN 20, can that host reach VLAN 10? Why or why not?</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P5</span><span class="ah-title">ACLs are stateless and directional — you must know where to apply them</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>An ACL is a list of permit/deny rules matched sequentially against packet headers. It does not track sessions. The classic rule: standard ACLs (match source IP only) go close to the destination; extended ACLs (match src+dst+protocol) go close to the source. Applied inbound filters traffic entering the interface; outbound filters traffic leaving.</p>
+      <div class="acc-eval">Self-check: You want to block VLAN 40 from reaching VLAN 30 but allow it to reach VLAN 50. Write the ACL logic (permit/deny lines) and identify which interface and direction to apply it.</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P6</span><span class="ah-title">OSPF uses cost, not hops — bandwidth determines the best path</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>OSPF cost = reference bandwidth (100 Mbps default) divided by interface bandwidth. A FastEthernet link has cost 1; a 10 Mbps link has cost 10. OSPF always picks the lowest total-cost path, which usually means the highest-bandwidth path — unlike RIP which just counts router hops.</p>
+      <div class="acc-eval">Self-check: Two paths from R1 to R4: Path A is 2 hops over FastEthernet (cost 1 each). Path B is 1 hop over 10 Mbps Ethernet (cost 10). Which does OSPF prefer? Which does RIP prefer?</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <div class="acc-header" onclick="toggleAcc(this)"><span class="ah-num">P7</span><span class="ah-title">DHCP requires a relay agent if the server is on a different subnet</span><span class="ah-arrow">▶</span></div>
+    <div class="acc-body">
+      <p>DHCP discovery messages are broadcasts — they don't cross router boundaries. If your DHCP server is in VLAN 50 but clients are in VLANs 10–40, you must configure ip helper-address on each router sub-interface to forward DHCP requests to the server's unicast address.</p>
+      <div class="acc-eval">Self-check: A student in VLAN 40 sends a DHCP discover. The DHCP server is in VLAN 50. List the exact configuration line you'd add to the VLAN 40 sub-interface to make DHCP work.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROCEDURE ===== -->
+<div class="panel" id="panel-procedure">
+  <div class="section-h">Lab 3 &amp; Mini-Project Steps</div>
+  <div class="progress-label">COMPLETION — <span id="pct-label">0%</span></div>
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+  <div class="step-card" data-step="0">
+    <div class="step-header">
+      <span class="step-num">PART A</span>
+      <span class="step-title">Build the topology in CML</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Create 4 routers (R1–R4) in a ring/mesh. Attach a LAN switch and at least one PC to each router. Connect router-to-router WAN links. Document which tool/simulator you used.</p>
+      <div class="cmd-block">hostname R1
+!
+interface GigabitEthernet0/0
+ description LAN-1
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/1
+ description WAN-to-R2
+ ip address 10.0.12.1 255.255.255.252
+ no shutdown<span class="cmd-label">R1 — initial interfaces</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="1">
+    <div class="step-header">
+      <span class="step-num">PART B</span>
+      <span class="step-title">Configure static routing</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Add static routes on every router so all 4 LAN subnets are reachable from everywhere. Test with pings. Record configuration time. Note: no route for a failed link = no recovery.</p>
+      <div class="cmd-block">! On R1: reach LAN 2,3,4
+ip route 192.168.2.0 255.255.255.0 10.0.12.2
+ip route 192.168.3.0 255.255.255.0 10.0.13.2
+ip route 192.168.4.0 255.255.255.0 10.0.12.2<span class="cmd-label">R1 — static routes</span></div>
+      <div class="cmd-block">show ip route
+ping 192.168.4.10 source 192.168.1.10<span class="cmd-label">Verify</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="2">
+    <div class="step-header">
+      <span class="step-num">PART C</span>
+      <span class="step-title">Configure RIP v2</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Remove static routes. Enable RIP v2 on all routers. Advertise all connected networks. Wait for convergence, then simulate a failure and measure recovery time and packet loss.</p>
+      <div class="cmd-block">no router rip
+router rip
+ version 2
+ no auto-summary
+ network 192.168.1.0
+ network 10.0.0.0<span class="cmd-label">R1 — RIP v2</span></div>
+      <div class="cmd-block">show ip rip database
+debug ip rip<span class="cmd-label">Verify &amp; debug</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="3">
+    <div class="step-header">
+      <span class="step-num">PART D</span>
+      <span class="step-title">Configure OSPF area 0</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Remove RIP. Configure OSPF process 1, area 0 on all routers. Measure convergence time and routing efficiency. Compare with RIP results.</p>
+      <div class="cmd-block">no router rip
+router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0
+ network 10.0.13.0 0.0.0.3 area 0<span class="cmd-label">R1 — OSPF</span></div>
+      <div class="cmd-block">show ip ospf neighbor
+show ip ospf database
+show ip route ospf<span class="cmd-label">Verify</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="4">
+    <div class="step-header">
+      <span class="step-num">PART E</span>
+      <span class="step-title">Simulate link failure</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">With each routing protocol active, shut down the R1–R2 link. Run extended pings and time how long until traffic recovers. Record packet loss count. Repeat for each protocol.</p>
+      <div class="cmd-block">interface GigabitEthernet0/1
+ shutdown   ! simulate failure
+!
+! ... measure recovery time ...
+!
+interface GigabitEthernet0/1
+ no shutdown  ! restore<span class="cmd-label">Failure simulation</span></div>
+      <div class="cmd-block">ping 192.168.4.10 repeat 100
+! note success/fail ratio during convergence<span class="cmd-label">Measure packet loss</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="5">
+    <div class="step-header">
+      <span class="step-num">PART F</span>
+      <span class="step-title">Write Lab 3 analysis report</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Compile results in a comparison table. Justify which protocol is best for this topology. Use the evaluation framework in Section 06 as your analysis structure.</p>
+      <div class="cmd-block" style="color:var(--amber)">| Protocol | Config time | Convergence | Packet loss | Efficiency |
+|----------|-------------|-------------|-------------|------------|
+| Static   |             | Manual only |             |            |
+| RIP v2   |             |             |             |            |
+| OSPF     |             |             |             |            |<span class="cmd-label">Results table template</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="6">
+    <div class="step-header">
+      <span class="step-num">CAMPUS A</span>
+      <span class="step-title">Design campus topology &amp; draw diagram</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Propose a hierarchical Core–Distribution–Access topology. Draw a clear network diagram showing routers, switches, VLANs, and the server room. Label all subnets.</p>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="7">
+    <div class="step-header">
+      <span class="step-num">CAMPUS B–C</span>
+      <span class="step-title">IP addressing plan &amp; VLAN design</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Allocate subnets for each VLAN using VLSM. Size each subnet to its expected host count. Create VLANs 10, 20, 30, 40, 50 on switches. Configure trunk links to the router.</p>
+      <div class="cmd-block">vlan 10
+ name Engineering
+vlan 20
+ name ICT
+vlan 30
+ name Admin
+vlan 40
+ name Student-WiFi
+vlan 50
+ name Servers<span class="cmd-label">Switch — VLAN creation</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="8">
+    <div class="step-header">
+      <span class="step-num">CAMPUS D–E</span>
+      <span class="step-title">Configure routing, DHCP &amp; inter-VLAN</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Set up router-on-a-stick or L3 switch SVIs. Configure DHCP pools for each VLAN. Add ip helper-address if DHCP server is remote. Verify hosts get IPs and can ping the gateway.</p>
+      <div class="cmd-block">ip dhcp pool VLAN10
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.50.10<span class="cmd-label">DHCP pool example</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="9">
+    <div class="step-header">
+      <span class="step-num">CAMPUS F</span>
+      <span class="step-title">Apply ACLs — students blocked from admin</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Write and apply extended ACLs to block VLAN 40 from reaching VLAN 30 while permitting access to VLAN 50. Apply to the correct sub-interface in the correct direction. Test and verify.</p>
+      <div class="cmd-block">ip access-list extended STUDENT-POLICY
+ 10 deny ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
+ 20 permit ip 192.168.40.0 0.0.0.255 192.168.50.0 0.0.0.255
+ 30 permit ip any any
+!
+interface Gi0/0.40
+ ip access-group STUDENT-POLICY in<span class="cmd-label">ACL configuration</span></div>
+    </div>
+  </div>
+
+  <div class="step-card" data-step="10">
+    <div class="step-header">
+      <span class="step-num">CAMPUS G–H</span>
+      <span class="step-title">Test &amp; write final report</span>
+      <button class="step-btn" onclick="markStep(this)">Mark done</button>
+    </div>
+    <div class="step-body">
+      <p class="step-desc">Verify end-to-end connectivity, VLAN isolation, and DHCP. Write the final report: network diagram, IP plan, config summary, and justification of all design decisions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EVALUATION ===== -->
+<div class="panel" id="panel-eval">
+  <div class="section-h">Five Evaluation Layers</div>
+  <div class="zero-insight">
+    <div class="zi-label">// ZERO INSIGHT</div>
+    <p>Your analysis report is only as strong as the layer it reaches. Most students stop at Layer 2 (does it work?). The highest marks come from Layer 4–5: comparing protocols under stress and justifying design decisions with evidence from your own measurements.</p>
+  </div>
+
+  <div class="eval-card">
+    <div class="eval-num">01</div>
+    <div class="eval-content">
+      <div class="ec-layer">LAYER 1 // FOUNDATION</div>
+      <div class="ec-title">Correct Addressing &amp; Connectivity</div>
+      <div class="ec-q">Can every PC reach every other PC? Are all subnets correctly assigned?</div>
+      <div class="ec-check">✓ show ip route — all 4 LAN networks present on each router<br>✓ ping between all LAN pairs succeeds<br>✓ no overlapping subnets</div>
+    </div>
+  </div>
+
+  <div class="eval-card">
+    <div class="eval-num">02</div>
+    <div class="eval-content">
+      <div class="ec-layer">LAYER 2 // PROTOCOL FUNCTION</div>
+      <div class="ec-title">Each Protocol Routes Correctly</div>
+      <div class="ec-q">Does RIP/OSPF learn all routes dynamically? Are neighbour adjacencies formed?</div>
+      <div class="ec-check">✓ show ip rip database / show ip ospf neighbor<br>✓ Routes tagged R (RIP) or O (OSPF) in routing table<br>✓ No manual static routes present during dynamic testing</div>
+    </div>
+  </div>
+
+  <div class="eval-card">
+    <div class="eval-num">03</div>
+    <div class="eval-content">
+      <div class="ec-layer">LAYER 3 // FAILURE RESPONSE</div>
+      <div class="ec-title">Convergence &amp; Packet Loss Measured</div>
+      <div class="ec-q">How long does each protocol take to recover? How many packets are lost during convergence?</div>
+      <div class="ec-check">✓ Timestamps recorded at shutdown and at restored ping<br>✓ Packet loss % calculated from extended ping output<br>✓ Static = no recovery (manual intervention required)</div>
+    </div>
+  </div>
+
+  <div class="eval-card">
+    <div class="eval-num">04</div>
+    <div class="eval-content">
+      <div class="ec-layer">LAYER 4 // COMPARATIVE ANALYSIS</div>
+      <div class="ec-title">Protocol Trade-offs Articulated</div>
+      <div class="ec-q">Why is OSPF faster than RIP? Why is static simpler but brittle? What does "routing efficiency" mean in your topology?</div>
+      <div class="ec-check">✓ Comparison table with all three protocols and three metrics<br>✓ Explanation of why OSPF wins on convergence (triggered updates vs periodic)<br>✓ Explanation of when static is still the right choice</div>
+    </div>
+  </div>
+
+  <div class="eval-card">
+    <div class="eval-num">05</div>
+    <div class="eval-content">
+      <div class="ec-layer">LAYER 5 // DESIGN JUSTIFICATION</div>
+      <div class="ec-title">Campus Decisions Evidenced &amp; Justified</div>
+      <div class="ec-q">Why that topology? Why those VLANs? Why those ACL rules? Why OSPF over RIP for the campus?</div>
+      <div class="ec-check">✓ Each design choice linked to a requirement (scalability, security, ease of management)<br>✓ ACL placement justified with interface/direction reasoning<br>✓ Protocol recommendation for campus backed by Lab 3 data</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GLOSSARY ===== -->
+<div class="panel" id="panel-glossary">
+  <div class="section-h">Key Terms</div>
+
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">Routing Table</span><span class="glos-abbr">RIB</span></div>
+    <div class="glos-def">A database in a router listing known destination networks, the next-hop address to reach them, and the metric/administrative distance of the route.</div>
+    <div class="glos-ex">In Lab 3: "show ip route" on R1 shows C (connected), S (static), R (RIP), or O (OSPF) routes.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">Convergence</span></div>
+    <div class="glos-def">The process by which all routers in a network reach a consistent, accurate view of the topology after a change such as a link failure.</div>
+    <div class="glos-ex">After shutting R1–R2 WAN: RIP converges in ~90–180s; OSPF converges in &lt;10s.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">Distance Vector</span><span class="glos-abbr">DV</span></div>
+    <div class="glos-def">A routing protocol class where each router knows only the distance (metric) to destinations and the direction (vector/next-hop) to reach them — not the full network map.</div>
+    <div class="glos-ex">RIP v2 is distance-vector: each router shares its routing table with neighbors every 30 seconds.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">Link State</span><span class="glos-abbr">LS</span></div>
+    <div class="glos-def">A routing protocol class where each router builds a complete map of the network topology (LSDB) and runs Dijkstra's SPF algorithm to find the shortest-cost path to every destination.</div>
+    <div class="glos-ex">OSPF is link-state: every router in area 0 has an identical LSDB ("show ip ospf database").</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">OSPF Cost</span></div>
+    <div class="glos-def">OSPF's metric = reference bandwidth (100 Mbps default) divided by interface bandwidth. Lower cost = preferred path.</div>
+    <div class="glos-ex">A FastEthernet (100 Mbps) link has cost 1. A 10 Mbps link has cost 10. OSPF prefers the FastEthernet path.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">VLAN</span><span class="glos-abbr">Virtual LAN</span></div>
+    <div class="glos-def">A logical grouping of switch ports into separate broadcast domains, regardless of physical location. Traffic between VLANs requires Layer 3 routing.</div>
+    <div class="glos-ex">Campus: VLAN 30 (Admin) and VLAN 40 (Students) are on the same switch but cannot communicate without going through the router — where the ACL blocks it.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">802.1Q Trunk</span></div>
+    <div class="glos-def">A switch-to-switch or switch-to-router link that carries traffic from multiple VLANs. Each frame is tagged with a 4-byte VLAN ID header.</div>
+    <div class="glos-ex">The link from the core switch to the router carries VLANs 10, 20, 30, 40, 50 simultaneously on one cable.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">ACL</span><span class="glos-abbr">Access Control List</span></div>
+    <div class="glos-def">An ordered list of permit/deny rules applied to a router interface. Rules are matched top-to-bottom; the first match wins. An implicit deny all sits at the end.</div>
+    <div class="glos-ex">STUDENT-POLICY: deny 40→30, permit 40→50, permit any — applied inbound on the VLAN 40 sub-interface.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">DHCP</span><span class="glos-abbr">Dynamic Host Config Protocol</span></div>
+    <div class="glos-def">A protocol where a server automatically assigns IP address, subnet mask, default gateway, and DNS to clients on a network.</div>
+    <div class="glos-ex">Students in VLAN 40 receive 192.168.40.x automatically; ip helper-address forwards the broadcast request to the server in VLAN 50.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">Router-on-a-Stick</span><span class="glos-abbr">RoaS</span></div>
+    <div class="glos-def">A single physical router interface subdivided into logical sub-interfaces, each assigned to a different VLAN. The physical link is a trunk. Used for inter-VLAN routing without a Layer 3 switch.</div>
+    <div class="glos-ex">Gi0/0.10 handles VLAN 10, Gi0/0.20 handles VLAN 20 — all on the same physical cable to the switch.</div>
+  </div>
+  <div class="glos-card">
+    <div class="glos-head"><span class="glos-term">VLSM</span><span class="glos-abbr">Variable Length Subnet Mask</span></div>
+    <div class="glos-def">Technique to subdivide an IP address space into subnets of different sizes, each sized to match its segment's host requirements — minimising address waste.</div>
+    <div class="glos-ex">A /24 for 200-host Engineering VLAN; a /30 for a 2-host WAN link. Both carved from the same address space.</div>
+  </div>
+</div>
+
+<!-- ===== ASSESSMENT ===== -->
+<div class="panel" id="panel-assessment">
+  <div class="section-h">Lab 3 — Scoring Breakdown</div>
+
+  <div class="assess-card">
+    <div class="assess-marks">Part A</div>
+    <div class="assess-body">
+      <div class="ab-part">TOPOLOGY &amp; SETUP</div>
+      <div class="ab-title">Network topology built and documented</div>
+      <div class="ab-desc">4 routers, correct interface IPs, LAN PCs, simulator identified, diagram included</div>
+    </div>
+  </div>
+  <div class="assess-card">
+    <div class="assess-marks">Part B</div>
+    <div class="assess-body">
+      <div class="ab-part">STATIC ROUTING</div>
+      <div class="ab-title">All static routes correct, full connectivity verified</div>
+      <div class="ab-desc">Config time recorded, failure behaviour observed and documented</div>
+    </div>
+  </div>
+  <div class="assess-card">
+    <div class="assess-marks">Part C</div>
+    <div class="assess-body">
+      <div class="ab-part">RIP v2</div>
+      <div class="ab-title">RIP configured, convergence time &amp; packet loss measured</div>
+      <div class="ab-desc">Version 2, no auto-summary, all networks advertised, failure test run</div>
+    </div>
+  </div>
+  <div class="assess-card">
+    <div class="assess-marks">Part D</div>
+    <div class="assess-body">
+      <div class="ab-part">OSPF</div>
+      <div class="ab-title">OSPF area 0 configured, convergence &amp; efficiency measured</div>
+      <div class="ab-desc">Correct network statements, adjacencies verified, metrics recorded</div>
+    </div>
+  </div>
+  <div class="assess-card">
+    <div class="assess-marks">Part F</div>
+    <div class="assess-body">
+      <div class="ab-part">ANALYSIS REPORT</div>
+      <div class="ab-title">Comparison table + justified recommendation</div>
+      <div class="ab-desc">Three metrics across three protocols; OSPF or appropriate recommendation with reasoning</div>
+    </div>
+  </div>
+
+  <div class="section-h" style="margin-top:24px">Mini-Project Submission Checklist</div>
+  <div id="checklist">
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>Network diagram (hierarchical/star topology, all VLANs labelled)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>IP addressing plan (VLSM table — all subnets, masks, gateways)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>VLAN design documented (IDs, names, purpose, assigned ports)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>Inter-VLAN routing configured and verified (router-on-a-stick or L3 switch)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>DHCP configured for all VLANs (or at minimum student + department VLANs)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>ACL applied: VLAN 40 blocked from VLAN 30, permitted to VLAN 50</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>End-to-end connectivity tested and documented (screenshots or ping logs)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>VLAN isolation tested (prove the ACL works)</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>Design justification written for topology, routing choice, VLAN structure, ACL placement</span></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="chk-box"></div><span>References included (at least 3 sources)</span></div>
+  </div>
+
+  <div class="report-tip">
+    <div class="rt-label">// ZERO REPORT TIP</div>
+    <p style="font-size:13px;color:var(--text);margin-top:6px">Frame your report using the Evaluation Framework layers: start with the topology decision (Layer 1), explain how each protocol performed (Layer 3), then make your campus recommendation (Layer 5). This structure signals analytical depth — you're not just describing what you did, you're explaining <em>why it matters</em> and what your measurements prove. Your Lab 3 data is your evidence base; reference it directly when justifying the campus protocol choice.</p>
+  </div>
+</div>
+
+<script>
+function switchTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  const tabs={overview:0,topology:1,components:2,priors:3,procedure:4,eval:5,glossary:6,assessment:7};
+  document.querySelectorAll('.nav-tab')[tabs[id]].classList.add('active');
+  window.scrollTo(0,0);
+}
+function toggleExp(header){
+  const body=header.nextElementSibling;
+  const open=body.classList.contains('open');
+  header.classList.toggle('open',!open);
+  body.classList.toggle('open',!open);
+}
+function toggleAcc(header){
+  const body=header.nextElementSibling;
+  const open=body.classList.contains('open');
+  header.classList.toggle('open',!open);
+  body.classList.toggle('open',!open);
+}
+const totalSteps=11;
+function markStep(btn){
+  const card=btn.closest('.step-card');
+  const done=card.classList.contains('done');
+  if(done){card.classList.remove('done');btn.classList.remove('done');btn.textContent='Mark done';}
+  else{card.classList.add('done');btn.classList.add('done');btn.textContent='✓ Done';}
+  updateProgress();
+}
+function updateProgress(){
+  const done=document.querySelectorAll('.step-card.done').length;
+  const pct=Math.round(done/totalSteps*100);
+  document.getElementById('progress-bar').style.width=pct+'%';
+  document.getElementById('pct-label').textContent=pct+'% ('+done+'/'+totalSteps+' steps)';
+}
+function toggleCheck(item){
+  const box=item.querySelector('.chk-box');
+  item.classList.toggle('checked');
+  box.classList.toggle('checked');
+}
+</script>
+</body>
+</html>
